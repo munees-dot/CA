@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Business Laws — Case File</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;0,700;1,500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+  :root{
+    --ink:#1C2541;
+    --ink-soft:#3A4568;
+    --paper:#F6F3EC;
+    --paper-raised:#FFFDF8;
+    --brass:#A8791F;
+    --brass-bright:#C79A3E;
+    --sage:#4C7A5C;
+    --rust:#A13B2E;
+    --line:#D9D2BF;
+    --shadow: 0 2px 10px rgba(28,37,65,0.08);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'IBM Plex Sans', sans-serif;
+    line-height:1.55;
+  }
+  .wrap{max-width:820px;margin:0 auto;padding:28px 20px 80px;}
+
+  header.masthead{
+    border-bottom:3px double var(--ink);
+    padding-bottom:16px;
+    margin-bottom:24px;
+  }
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    color:var(--brass);
+    margin-bottom:6px;
+  }
+  h1{
+    font-family:'Lora', serif;
+    font-weight:700;
+    font-size:32px;
+    margin:0 0 4px;
+    color:var(--ink);
+  }
+  .subtitle{
+    font-size:14px;
+    color:var(--ink-soft);
+  }
+
+  nav.tabs{
+    display:flex;
+    gap:2px;
+    margin-bottom:24px;
+    border:1px solid var(--ink);
+    border-radius:2px;
+    overflow:hidden;
+  }
+  nav.tabs button{
+    flex:1;
+    padding:12px 10px;
+    background:var(--paper-raised);
+    border:none;
+    border-right:1px solid var(--line);
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    cursor:pointer;
+    transition:background .15s, color .15s;
+  }
+  nav.tabs button:last-child{border-right:none;}
+  nav.tabs button.active{
+    background:var(--ink);
+    color:var(--paper-raised);
+  }
+  nav.tabs button:hover:not(.active){background:#EFEADB;}
+
+  .panel{display:none;}
+  .panel.active{display:block;animation:fade .25s ease;}
+  @keyframes fade{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
+
+  /* --- Syllabus / Case Docket cards --- */
+  .docket{
+    background:var(--paper-raised);
+    border:1px solid var(--line);
+    border-radius:3px;
+    padding:18px 20px;
+    margin-bottom:14px;
+    box-shadow:var(--shadow);
+    position:relative;
+  }
+  .docket-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    gap:12px;
+    margin-bottom:8px;
+  }
+  .docket-num{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    color:var(--brass);
+    letter-spacing:0.08em;
+  }
+  .docket h3{
+    font-family:'Lora', serif;
+    font-size:18px;
+    margin:2px 0 0;
+    color:var(--ink);
+  }
+  .stamp{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    padding:3px 9px;
+    border:1.5px solid var(--sage);
+    color:var(--sage);
+    border-radius:2px;
+    white-space:nowrap;
+    transform:rotate(-2deg);
+  }
+  .stamp.pending{border-color:var(--line);color:var(--ink-soft);}
+  ul.topics{
+    margin:8px 0 0;
+    padding-left:18px;
+    font-size:14px;
+    color:var(--ink-soft);
+  }
+  ul.topics li{margin-bottom:3px;}
+
+  /* --- Practice --- */
+  select#chapterSelect{
+    width:100%;
+    padding:12px 14px;
+    font-family:'IBM Plex Sans', sans-serif;
+    font-size:14px;
+    border:1px solid var(--ink);
+    border-radius:2px;
+    background:var(--paper-raised);
+    color:var(--ink);
+    margin-bottom:18px;
+  }
+  .quiz-card{
+    background:var(--paper-raised);
+    border:1px solid var(--line);
+    border-radius:3px;
+    padding:22px;
+    box-shadow:var(--shadow);
+  }
+  .q-progress{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    color:var(--brass);
+    margin-bottom:10px;
+    letter-spacing:0.05em;
+  }
+  .q-text{
+    font-family:'Lora', serif;
+    font-size:17px;
+    margin:0 0 16px;
+    color:var(--ink);
+  }
+  .opt{
+    display:block;
+    width:100%;
+    text-align:left;
+    padding:12px 14px;
+    margin-bottom:8px;
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:2px;
+    font-family:'IBM Plex Sans', sans-serif;
+    font-size:14px;
+    color:var(--ink);
+    cursor:pointer;
+    transition:border-color .15s, background .15s;
+  }
+  .opt:hover{border-color:var(--ink);}
+  .opt.correct{background:#E9F2EC;border-color:var(--sage);color:var(--sage);font-weight:600;}
+  .opt.wrong{background:#F6E9E7;border-color:var(--rust);color:var(--rust);font-weight:600;}
+  .opt[disabled]{cursor:default;}
+  .explain{
+    margin-top:14px;
+    padding:12px 14px;
+    background:#F1EDE0;
+    border-left:3px solid var(--brass);
+    font-size:13.5px;
+    color:var(--ink-soft);
+    display:none;
+  }
+  .explain.show{display:block;}
+  .next-btn{
+    margin-top:16px;
+    padding:10px 20px;
+    background:var(--ink);
+    color:var(--paper-raised);
+    border:none;
+    border-radius:2px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    cursor:pointer;
+    display:none;
+  }
+  .next-btn.show{display:inline-block;}
+
+  .quiz-done{text-align:center;padding:30px 10px;}
+  .quiz-done .score{
+    font-family:'Lora', serif;
+    font-size:40px;
+    color:var(--brass);
+    margin:10px 0;
+  }
+
+  /* --- Progress --- */
+  .stat-row{
+    display:flex;
+    gap:12px;
+    margin-bottom:20px;
+  }
+  .stat-box{
+    flex:1;
+    background:var(--paper-raised);
+    border:1px solid var(--line);
+    border-radius:3px;
+    padding:16px;
+    text-align:center;
+    box-shadow:var(--shadow);
+  }
+  .stat-box .num{
+    font-family:'Lora', serif;
+    font-size:28px;
+    color:var(--ink);
+  }
+  .stat-box .lbl{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10px;
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+    color:var(--ink-soft);
+    margin-top:4px;
+  }
+  .prog-item{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:10px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .prog-item:last-child{border-bottom:none;}
+  .prog-name{
+    flex:0 0 210px;
+    font-size:13.5px;
+    color:var(--ink);
+  }
+  .prog-bar-track{
+    flex:1;
+    height:8px;
+    background:var(--line);
+    border-radius:4px;
+    overflow:hidden;
+  }
+  .prog-bar-fill{
+    height:100%;
+    background:var(--brass-bright);
+    border-radius:4px;
+    transition:width .3s;
+  }
+  .prog-pct{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    color:var(--ink-soft);
+    width:38px;
+    text-align:right;
+  }
+  .empty-note{
+    font-size:13.5px;
+    color:var(--ink-soft);
+    font-style:italic;
+    padding:8px 0 0;
+  }
+  .reset-link{
+    margin-top:22px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    color:var(--ink-soft);
+    text-decoration:underline;
+    cursor:pointer;
+    display:inline-block;
+  }
+
+  /* --- Notes --- */
+  .notes-body{
+    background:var(--paper-raised);
+    border:1px solid var(--line);
+    border-radius:3px;
+    padding:24px 26px;
+    box-shadow:var(--shadow);
+  }
+  .notes-body h2{
+    font-family:'Lora', serif;
+    font-size:22px;
+    color:var(--ink);
+    margin:0 0 4px;
+    border-bottom:2px solid var(--brass);
+    padding-bottom:10px;
+  }
+  .notes-body h3{
+    font-family:'Lora', serif;
+    font-size:16px;
+    color:var(--brass);
+    margin:22px 0 8px;
+  }
+  .notes-body p{
+    font-size:14.5px;
+    color:var(--ink-soft);
+    margin:0 0 10px;
+  }
+  .notes-body ul, .notes-body ol{
+    font-size:14.5px;
+    color:var(--ink-soft);
+    padding-left:20px;
+    margin:0 0 10px;
+  }
+  .notes-body li{margin-bottom:4px;}
+  .notes-body strong{color:var(--ink);}
+  .notes-body table{
+    width:100%;
+    border-collapse:collapse;
+    margin:10px 0 16px;
+    font-size:13.5px;
+  }
+  .notes-body th, .notes-body td{
+    border:1px solid var(--line);
+    padding:8px 10px;
+    text-align:left;
+    color:var(--ink-soft);
+  }
+  .notes-body th{
+    background:#F1EDE0;
+    color:var(--ink);
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:0.04em;
+  }
+  .notes-body em{
+    display:block;
+    margin-top:16px;
+    padding-top:12px;
+    border-top:1px dashed var(--line);
+    font-size:13px;
+    color:var(--brass);
+  }
+  .notes-missing{
+    text-align:center;
+    padding:40px 20px;
+    color:var(--ink-soft);
+    font-size:14px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="masthead">
+    <div class="eyebrow">CA Foundation · Paper 2</div>
+    <h1>Business Laws — Case File</h1>
+    <div class="subtitle">Syllabus, practice questions, and progress — one chapter at a time.</div>
+  </header>
+
+  <nav class="tabs">
+    <button data-tab="syllabus" class="active">Syllabus</button>
+    <button data-tab="notes">Notes</button>
+    <button data-tab="practice">Practice</button>
+    <button data-tab="progress">Progress</button>
+  </nav>
+
+  <!-- SYLLABUS -->
+  <section id="syllabus" class="panel active"></section>
+
+  <!-- NOTES -->
+  <section id="notes" class="panel">
+    <select id="notesSelect"></select>
+    <div id="notesArea"></div>
+  </section>
+
+  <!-- PRACTICE -->
+  <section id="practice" class="panel">
+    <select id="chapterSelect"></select>
+    <div id="quizArea"></div>
+  </section>
+
+  <!-- PROGRESS -->
+  <section id="progress" class="panel"></section>
+
+</div>
+
+<script>
+/* ---------------- DATA ---------------- */
+const chapters = [
+  {
+    id: "ch1",
+    num: "No. 1",
+    title: "Theoretical Framework",
+    topics: ["Ministry of Finance","SEBI","IBBI","Ministry of Corporate Affairs","RBI","Ministry of Law and Justice"],
+    notes: `
+      <h2>Chapter 1: Theoretical Framework — വിശദമായ Notes</h2>
+      <p>ഈ chapter ചെറുതാണ്, പക്ഷേ പ്രധാനപ്പെട്ട regulatory bodies-ന്റെ roles clear ആയി അറിഞ്ഞിരിക്കണം — MCQs-ൽ confuse ചെയ്യാൻ സാധ്യതയുള്ള topic ആണിത്.</p>
+
+      <h3>1. Ministry of Finance</h3>
+      <p><strong>Role:</strong> രാജ്യത്തിന്റെ overall financial policy-യുടെ ചുമതല.</p>
+      <ul>
+        <li>Government-ന്റെ <strong>budget</strong> ഉണ്ടാക്കുന്നത് ഇവിടെ നിന്നാണ്</li>
+        <li><strong>Taxation policy</strong> (Direct & Indirect taxes) നിയന്ത്രിക്കുന്നു</li>
+        <li>RBI, SEBI, IBBI പോലുള്ള regulators-ന്റെ overall administrative control ഇവിടെയാണ്</li>
+      </ul>
+      <p><strong>ഓർക്കാൻ:</strong> Ministry of Finance = "money-യുടെ policy-maker."</p>
+
+      <h3>2. SEBI — Securities and Exchange Board of India</h3>
+      <p><strong>Role:</strong> Securities market (share market) regulate ചെയ്യുക.</p>
+      <ul>
+        <li>Stock exchanges (BSE, NSE) നിയന്ത്രിക്കുന്നു</li>
+        <li>Investors-ന്റെ interest protect ചെയ്യുന്നു</li>
+        <li>IPO rules, insider trading തടയൽ</li>
+      </ul>
+      <p><strong>ഓർക്കാൻ:</strong> SEBI = "Share market-ന്റെ police."</p>
+
+      <h3>3. IBBI — Insolvency and Bankruptcy Board of India</h3>
+      <p><strong>Role:</strong> Companies/individuals കടം തിരിച്ചടയ്ക്കാൻ കഴിയാതെ വരുമ്പോൾ ഉള്ള insolvency & bankruptcy process regulate ചെയ്യുക.</p>
+      <ul>
+        <li>Insolvency Professionals-നെ register ചെയ്യുന്നു, നിയന്ത്രിക്കുന്നു</li>
+        <li>IBC (Insolvency and Bankruptcy Code, 2016) പ്രകാരമുള്ള resolution process oversee ചെയ്യുന്നു</li>
+      </ul>
+      <p><strong>ഓർക്കാൻ:</strong> IBBI = "കടം തിരിച്ചടയ്ക്കാൻ കഴിയാത്ത companies-ന്റെ കാര്യം നോക്കുന്ന body."</p>
+
+      <h3>4. Ministry of Corporate Affairs (MCA)</h3>
+      <p><strong>Role:</strong> Companies-ന്റെ registration, administration, regulation.</p>
+      <ul>
+        <li><strong>Companies Act, 2013</strong> implement ചെയ്യുന്നത് ഈ ministry-യാണ്</li>
+        <li>New companies-ന്റെ <strong>incorporation</strong> ഇവിടെ നടക്കുന്നു</li>
+        <li>Company law, LLP registration ഇതിന്റെ കീഴിൽ</li>
+      </ul>
+      <p><strong>ഓർക്കാൻ:</strong> MCA = "Companies ജനിക്കുന്നതും പ്രവർത്തിക്കുന്നതും നിയന്ത്രിക്കുന്ന body."</p>
+
+      <h3>5. RBI — Reserve Bank of India</h3>
+      <p><strong>Role:</strong> ഇന്ത്യയുടെ central bank, monetary policy & banking regulation.</p>
+      <ul>
+        <li>Currency issue ചെയ്യുന്നു</li>
+        <li>Monetary policy (interest rates, inflation control) നിശ്ചയിക്കുന്നു</li>
+        <li>Banks-നെ regulate ചെയ്യുന്നു, foreign exchange management (FEMA)</li>
+      </ul>
+      <p><strong>ഓർക്കാൻ:</strong> RBI = "Banks-ന്റെയും currency-യുടെയും ബോസ്."</p>
+
+      <h3>6. Ministry of Law and Justice</h3>
+      <p><strong>Role:</strong> രാജ്യത്തിന്റെ overall legal & judicial framework.</p>
+      <ul>
+        <li>പുതിയ നിയമങ്ങൾ draft ചെയ്യാൻ സഹായിക്കുന്നു</li>
+        <li>Judiciary administration-മായി ബന്ധപ്പെട്ട കാര്യങ്ങൾ</li>
+      </ul>
+      <p><strong>ഓർക്കാൻ:</strong> ഒരു specific sector അല്ല, മറിച്ച് overall legal system കൈകാര്യം ചെയ്യുന്ന body.</p>
+
+      <h3>Confuse ആകാൻ സാധ്യതയുള്ള Points</h3>
+      <table>
+        <tr><th>Confusion</th><th>Clarification</th></tr>
+        <tr><td>SEBI vs RBI</td><td>SEBI = Share market, RBI = Banks & currency</td></tr>
+        <tr><td>MCA vs SEBI</td><td>MCA = Company registration, SEBI = Listed companies' share trading</td></tr>
+        <tr><td>IBBI vs MCA</td><td>IBBI = കടം തിരിച്ചടയ്ക്കാൻ കഴിയാത്തപ്പോൾ, MCA = Normal company registration</td></tr>
+      </table>
+
+      <h3>Quick Revision Table</h3>
+      <table>
+        <tr><th>Body</th><th>ഒറ്റവാക്കിൽ Role</th></tr>
+        <tr><td>Ministry of Finance</td><td>Budget & tax policy</td></tr>
+        <tr><td>SEBI</td><td>Share market regulator</td></tr>
+        <tr><td>IBBI</td><td>Insolvency/bankruptcy regulator</td></tr>
+        <tr><td>MCA</td><td>Company registration & Companies Act</td></tr>
+        <tr><td>RBI</td><td>Central bank, currency & banking</td></tr>
+        <tr><td>Ministry of Law and Justice</td><td>Legal & judicial framework</td></tr>
+      </table>
+      <em>MCQ-കൾ mostly "ഏത് body ഏത് കാര്യം ചെയ്യുന്നു" match ചെയ്യിക്കുന്ന രീതിയിലാണ് വരിക.</em>
+    `,
+    questions: [
+      {q:"Which body regulates securities markets in India?", opts:["RBI","SEBI","IBBI","MCA"], correct:1, exp:"SEBI (Securities and Exchange Board of India) regulates the securities market and protects investor interests."},
+      {q:"The Insolvency and Bankruptcy Board of India (IBBI) primarily deals with:", opts:["Currency policy","Insolvency and bankruptcy processes","Company registration","Tax collection"], correct:1, exp:"IBBI regulates insolvency professionals and oversees the insolvency resolution process under the IBC."},
+      {q:"Company incorporation and related filings in India fall under:", opts:["RBI","SEBI","Ministry of Corporate Affairs","Ministry of Finance"], correct:2, exp:"The Ministry of Corporate Affairs (MCA) administers the Companies Act and company registrations."},
+      {q:"Monetary policy and banking regulation in India is the responsibility of:", opts:["RBI","SEBI","IBBI","MCA"], correct:0, exp:"The Reserve Bank of India (RBI) is the central bank responsible for monetary policy and banking regulation."},
+      {q:"Which ministry oversees the overall legal and judicial framework of the country?", opts:["Ministry of Finance","Ministry of Law and Justice","Ministry of Corporate Affairs","RBI"], correct:1, exp:"The Ministry of Law and Justice handles legislative and judicial administration matters."},
+      {q:"Which body is primarily responsible for protecting the interests of investors in the securities market?", opts:["RBI","IBBI","SEBI","MCA"], correct:2, exp:"SEBI's core objective is to protect investors and regulate the securities market, including preventing fraudulent practices."},
+      {q:"Registration of a Limited Liability Partnership (LLP) falls under the administration of:", opts:["SEBI","Ministry of Corporate Affairs","RBI","Ministry of Law and Justice"], correct:1, exp:"MCA administers both the Companies Act and the LLP Act, including registration of LLPs."},
+      {q:"Which regulatory body would a company approach when it wants to raise capital through an Initial Public Offering (IPO)?", opts:["RBI","IBBI","SEBI","Ministry of Law and Justice"], correct:2, exp:"SEBI regulates the process and disclosures required when companies raise funds from the public through an IPO."},
+      {q:"Foreign Exchange Management (FEMA) related matters are primarily overseen by:", opts:["SEBI","MCA","RBI","IBBI"], correct:2, exp:"RBI oversees foreign exchange management under FEMA, in addition to its core banking and currency functions."},
+      {q:"Insolvency professionals who manage the resolution process under the IBC are registered and regulated by:", opts:["MCA","IBBI","SEBI","Ministry of Finance"], correct:1, exp:"IBBI specifically registers and regulates insolvency professionals operating under the Insolvency and Bankruptcy Code."},
+      {q:"Which body is generally considered the administrative authority with overall control over financial sector regulators like RBI, SEBI, and IBBI?", opts:["Ministry of Law and Justice","Ministry of Corporate Affairs","Ministry of Finance","None, they are fully independent"], correct:2, exp:"The Ministry of Finance holds overall administrative oversight of India's financial policy and its regulators."}
+    ]
+  },
+  {
+    id: "ch2",
+    num: "No. 2",
+    title: "The Indian Contract Act, 1872",
+    topics: ["Nature of Contract","Consideration","Essential Elements","Performance","Breach & Remedies","Contingent & Quasi Contract","Indemnity & Guarantee","Bailment & Pledge","Agency"],
+    notes: `
+      <h2>Chapter 2: The Indian Contract Act, 1872 — വിശദമായ Notes</h2>
+
+      <h3>1. Contract എന്താൽ? (Nature of Contract)</h3>
+      <p><strong>Section 2(h):</strong> Contract = Agreement + Legal Enforceability</p>
+      <ul>
+        <li><strong>Agreement</strong> — Offer + Acceptance</li>
+        <li><strong>Enforceable by law</strong> — കോടതിയിൽ നടപ്പിലാക്കാൻ കഴിയണം</li>
+      </ul>
+      <p>Agreement-ന്റെ types: <strong>Valid Contract</strong> (എല്ലാ elements ഉള്ളത്), <strong>Void Agreement</strong> (തുടക്കം മുതൽ enforceable അല്ലാത്തത്), <strong>Voidable Contract</strong> (cancel ചെയ്യാൻ അവകാശമുള്ളത്), <strong>Illegal Agreement</strong>, <strong>Unenforceable Contract</strong> (procedural കുറവ് കൊണ്ട്).</p>
+
+      <h3>2. Essential Elements of a Valid Contract (Section 10)</h3>
+      <ol>
+        <li><strong>Offer & Acceptance</strong> — clear offer, unqualified acceptance</li>
+        <li><strong>Intention to create legal relationship</strong> — social agreements ഇതിൽ പെടില്ല</li>
+        <li><strong>Lawful Consideration</strong></li>
+        <li><strong>Capacity of Parties</strong> — 18 വയസ്സ്, sound mind</li>
+        <li><strong>Free Consent</strong></li>
+        <li><strong>Lawful Object</strong></li>
+        <li><strong>Not expressly declared void</strong></li>
+      </ol>
+      <p><strong>Example:</strong> A പറയുന്നു "എന്റെ bike ₹50,000-ന് വിൽക്കാം," B പറയുന്നു "ശരി." — Valid contract.</p>
+
+      <h3>3. Consideration</h3>
+      <p>ഒരു party മറ്റൊരു party-ക്ക് വേണ്ടി ചെയ്യുന്ന/ചെയ്യാൻ സമ്മതിക്കുന്ന എന്തെങ്കിലും — money, service, goods, അല്ലെങ്കിൽ promise.</p>
+      <ul>
+        <li>Consideration <strong>lawful</strong> ആയിരിക്കണം</li>
+        <li>Already നിലവിലുള്ള legal obligation-ന് extra പണം വാഗ്ദാനം ചെയ്താൽ അത് valid consideration അല്ല</li>
+        <li><strong>"No consideration, no contract"</strong> — Exception: natural love and affection ഉള്ള, registered agreements (Section 25)</li>
+      </ul>
+
+      <h3>4. Capacity to Contract</h3>
+      <p>18 വയസ്സ് കഴിഞ്ഞ, sound mind ഉള്ള, നിയമപ്രകാരം disqualify ചെയ്യപ്പെടാത്തവർ.</p>
+      <p><strong>Minor-മായുള്ള agreement:</strong> <strong>void ab initio</strong> (തുടക്കം മുതൽ അസാധുവാണ്). Minor-ന് ബാധ്യത ഉണ്ടാകില്ല, പക്ഷേ minor-ന് benefit കിട്ടുന്ന agreements allowed ആണ്.</p>
+
+      <h3>5. Free Consent</h3>
+      <table>
+        <tr><th>ഘടകം</th><th>അർത്ഥം</th><th>Effect</th></tr>
+        <tr><td>Coercion</td><td>ബലം പ്രയോഗിച്ച് സമ്മതം വാങ്ങൽ</td><td>Voidable</td></tr>
+        <tr><td>Undue Influence</td><td>സ്വാധീനം misuse ചെയ്യൽ</td><td>Voidable</td></tr>
+        <tr><td>Fraud</td><td>മനഃപൂർവ്വം തെറ്റായ വിവരം</td><td>Voidable</td></tr>
+        <tr><td>Misrepresentation</td><td>അറിയാതെ തെറ്റായ വിവരം</td><td>Voidable</td></tr>
+        <tr><td>Mistake</td><td>രണ്ട് പേരും തെറ്റിദ്ധരിക്കൽ</td><td>Void (bilateral mistake)</td></tr>
+      </table>
+
+      <h3>6. Performance of Contract</h3>
+      <ul>
+        <li><strong>Actual Performance</strong> — obligation പൂർണ്ണമായി നിറവേറ്റുന്നത്</li>
+        <li><strong>Attempted Performance (Tender)</strong> — ready and willing, പക്ഷേ accept ചെയ്യുന്നില്ല</li>
+      </ul>
+
+      <h3>7. Breach of Contract & Remedies</h3>
+      <p><strong>Types:</strong> Actual Breach (due date-ന് perform ചെയ്യാതിരിക്കൽ), Anticipatory Breach (മുൻപ് തന്നെ പറയൽ)</p>
+      <p><strong>Remedies:</strong></p>
+      <ol>
+        <li><strong>Damages</strong> — നഷ്ടപരിഹാരം</li>
+        <li><strong>Specific Performance</strong> — promise ചെയ്ത കാര്യം തന്നെ ചെയ്യിക്കൽ</li>
+        <li><strong>Injunction</strong> — ചെയ്യാതിരിക്കാൻ ഉത്തരവ്</li>
+        <li><strong>Rescission</strong> — contract cancel ചെയ്യൽ</li>
+        <li><strong>Quantum Meruit</strong> — ഭാഗിക work-ന് ന്യായമായ പ്രതിഫലം</li>
+      </ol>
+
+      <h3>8. Contingent & Quasi Contract</h3>
+      <p><strong>Contingent Contract:</strong> ഭാവിയിലെ uncertain event-നെ depend ചെയ്യുന്ന contract. Example: "മഴ പെയ്താൽ ₹1000 തരാം."</p>
+      <p><strong>Quasi Contract:</strong> യഥാർത്ഥ contract ഇല്ലെങ്കിലും unjust enrichment ഒഴിവാക്കാൻ നിയമം ചുമത്തുന്ന ബാധ്യത.</p>
+
+      <h3>9. Indemnity & Guarantee</h3>
+      <p><strong>Indemnity:</strong> ഒരു party നഷ്ടം compensate ചെയ്യാൻ promise ചെയ്യുന്നത് (2 parties).</p>
+      <p><strong>Guarantee:</strong> മൂന്നാമത്തെ party (Surety) മറ്റൊരാളുടെ obligation നിറവേറ്റാമെന്ന് promise ചെയ്യുന്നത് (3 parties: Surety, Principal Debtor, Creditor).</p>
+
+      <h3>10. Bailment & Pledge</h3>
+      <p><strong>Bailment:</strong> Goods ഒരു purpose-ന് വേണ്ടി കൈമാറൽ, purpose കഴിഞ്ഞാൽ തിരിച്ചു കൊടുക്കണം.</p>
+      <p><strong>Pledge:</strong> Bailment-ന്റെ special type — goods loan-ന് security ആയി കൊടുക്കൽ.</p>
+
+      <h3>11. Contract of Agency</h3>
+      <p>Agent മറ്റൊരാൾക്ക് (Principal) വേണ്ടി പ്രവർത്തിക്കാൻ authorize ചെയ്യപ്പെട്ട വ്യക്തി. Agency contract-ന് consideration ആവശ്യമില്ല എന്നത് ഒരു exception ആണ്.</p>
+
+      <h3>Quick Revision Table</h3>
+      <table>
+        <tr><th>Topic</th><th>Keyword</th></tr>
+        <tr><td>Nature of Contract</td><td>Agreement + Enforceability</td></tr>
+        <tr><td>Minor</td><td>Void ab initio</td></tr>
+        <tr><td>Breach Remedies</td><td>Damages, Specific Performance, Injunction, Rescission, Quantum Meruit</td></tr>
+        <tr><td>Indemnity vs Guarantee</td><td>2 parties vs 3 parties</td></tr>
+        <tr><td>Bailment vs Pledge</td><td>General purpose vs Security for loan</td></tr>
+      </table>
+      <em>ചെറിയ ഭാഗങ്ങളായി പഠിച്ച്, ഓരോ topic-നു ശേഷവും Practice tab-ലെ MCQs ചെയ്യുക.</em>
+    `,
+    questions: [
+      {q:"A invites B to dinner at his house. B agrees but doesn't turn up. Can A sue B?", opts:["Yes, since there was an agreement","No, because there was no intention to create legal relations","Yes, but only for token damages","No, because B is a minor"], correct:1, exp:"Social invitations lack 'intention to create legal relations,' an essential element of a valid contract."},
+      {q:"Which of the following is NOT valid consideration?", opts:["A pays B ₹500 to repair his car","A promises B a registered gift out of natural love and affection","A promises to pay B ₹1000 for something B is already legally bound to do","A pays B for goods already delivered"], correct:2, exp:"Promising to pay for something already legally required is not valid new consideration."},
+      {q:"X, a minor, buys a bicycle from Y and pays one installment, then refuses to pay more. Can Y sue X?", opts:["Yes, a contract was formed","No, agreements with minors are void ab initio","Yes, but only for damages","No, but X must return the bicycle"], correct:1, exp:"Agreements with minors are void from the start under Indian law — a minor cannot be bound."},
+      {q:"A signs an agreement at gunpoint. This contract is:", opts:["Valid","Void","Voidable at A's option","Illegal"], correct:2, exp:"Coercion makes a contract voidable at the option of the party whose consent was coerced — not automatically void."},
+      {q:"In a contract of guarantee, the person who gives the guarantee is called the:", opts:["Principal debtor","Creditor","Surety","Agent"], correct:2, exp:"The surety guarantees payment; the principal debtor owes the debt; the creditor is owed the debt."},
+      {q:"Goods are left with a friend for safekeeping. This is an example of:", opts:["Pledge","Bailment","Agency","Indemnity"], correct:1, exp:"Bailment is the delivery of goods by one person to another for a purpose, with return expected — safekeeping is a classic example."},
+      {q:"A quasi-contract arises:", opts:["From mutual agreement","By operation of law, without a formal agreement","Only between family members","Only in writing"], correct:1, exp:"Quasi-contracts are obligations imposed by law to prevent unjust enrichment, even without an actual agreement."}
+    ]
+  },
+  {
+    id: "ch3",
+    num: "No. 3",
+    title: "The Sale of Goods Act, 1930",
+    topics: ["Formation of Contract of Sale","Conditions and Warranties","Transfer of Ownership & Delivery","Unpaid Seller's Rights"],
+    questions: [
+      {q:"A 'condition' in a contract of sale is:", opts:["A minor term, breach gives only damages","A term essential to the contract; breach allows repudiation","Irrelevant to the sale","Only applicable to immovable property"], correct:1, exp:"A condition is essential to the main purpose of the contract; its breach lets the aggrieved party treat the contract as repudiated."},
+      {q:"A 'warranty' differs from a condition because breach of warranty gives the buyer:", opts:["The right to reject goods and claim damages","Only the right to claim damages, not reject goods","No remedy at all","The right to cancel future contracts only"], correct:1, exp:"Breach of warranty is a lesser breach — the buyer can only claim damages, not repudiate the contract."},
+      {q:"In a sale (not an 'agreement to sell'), ownership of goods transfers:", opts:["Only after full payment","Immediately at the time of contract","Only after delivery","Never before a written deed"], correct:1, exp:"In a 'sale,' ownership transfers to the buyer at the time the contract is made, even if delivery/payment happens later."},
+      {q:"An unpaid seller's right of lien allows them to:", opts:["Sue the buyer for breach only","Retain possession of goods until payment","Cancel the contract without notice","Claim ownership of buyer's other property"], correct:1, exp:"Lien lets an unpaid seller retain possession of the goods sold until payment is made, even if ownership has passed."},
+      {q:"'Goods' under the Sale of Goods Act includes:", opts:["Only tangible movable property","Money and actionable claims","Immovable property like land","Only agricultural produce"], correct:0, exp:"'Goods' means every kind of movable property, excluding money and actionable claims."}
+    ]
+  },
+  {
+    id: "ch4",
+    num: "No. 4",
+    title: "The Indian Partnership Act, 1932",
+    topics: ["General Nature of Partnership","Relations of Partners","Registration & Dissolution","Reconstitution of Firms"],
+    questions: [
+      {q:"Partnership is defined as the relation between persons who agree to share profits of a business:", opts:["Carried on by all of them","Carried on by all or any of them acting for all","Carried on by a hired manager only","None of these, profit sharing alone is enough"], correct:1, exp:"Partnership requires the business to be carried on by all partners, or by any of them acting on behalf of all."},
+      {q:"Registration of a partnership firm in India is:", opts:["Compulsory before starting business","Optional, but unregistered firms face legal disadvantages","Never required","Required only for firms above a certain turnover"], correct:1, exp:"Registration is not compulsory, but an unregistered firm cannot sue third parties or other partners in court."},
+      {q:"A partner who lends their name to the firm without any real interest is called a:", opts:["Active partner","Sleeping partner","Partner by estoppel/holding out","Minor partner"], correct:2, exp:"A person who represents themselves (or allows themselves to be represented) as a partner, without actually being one, is a 'partner by holding out' and can be held liable to those who relied on it."},
+      {q:"Dissolution of a firm means:", opts:["Only one partner leaving, firm continues","The complete breakdown of relation between ALL partners", "A change in profit-sharing ratio","Admission of a new partner"], correct:1, exp:"Dissolution ends the partnership relationship between all partners, unlike 'reconstitution' which changes membership but continues the firm."},
+      {q:"A minor can be admitted to a partnership:", opts:["As a full partner with unlimited liability","Only to the benefits of partnership, not full partner status","Never, under any circumstances","Only if all partners are also minors"], correct:1, exp:"A minor can be admitted to the benefits of partnership with the consent of all partners, but cannot be a full partner with unlimited liability."}
+    ]
+  },
+  {
+    id: "ch5",
+    num: "No. 5",
+    title: "The Limited Liability Partnership Act, 2008",
+    topics: ["Nature and Scope","Essential Features","Characteristics of LLP","Incorporation & Differences from Other Forms"],
+    questions: [
+      {q:"An LLP is best described as a hybrid between:", opts:["A sole proprietorship and a trust","A partnership and a company","A company and a cooperative society","A trust and a society"], correct:1, exp:"LLP combines the flexibility of a partnership with the limited liability feature of a company."},
+      {q:"In an LLP, the liability of partners is:", opts:["Unlimited, same as traditional partnership","Limited to their agreed contribution","Always zero","Limited only for the managing partner"], correct:1, exp:"A key feature of LLP: partners' liability is limited to their agreed contribution, protecting personal assets."},
+      {q:"An LLP is formed and registered under:", opts:["The Indian Partnership Act, 1932","The LLP Act, 2008","The Companies Act, 2013","The Contract Act, 1872"], correct:1, exp:"LLPs are a distinct legal form created and governed by the Limited Liability Partnership Act, 2008."},
+      {q:"Does an LLP have a separate legal entity, distinct from its partners?", opts:["No, same as a traditional partnership","Yes, like a company","Only if it has more than 5 partners","Only for tax purposes"], correct:1, exp:"Like a company, an LLP is a separate legal entity that can own property, sue, and be sued in its own name."},
+      {q:"Compared to a private company, an LLP generally has:", opts:["More compliance burden","Fewer compliance requirements","No difference at all","No legal recognition"], correct:1, exp:"LLPs typically have simpler compliance and lower regulatory burden compared to companies, while still offering limited liability."}
+    ]
+  },
+  {
+    id: "ch6",
+    num: "No. 6",
+    title: "The Companies Act, 2013",
+    topics: ["Features of a Company","Corporate Veil Theory","Classes of Companies","Share Capital","Incorporation","MOA & AOA","Doctrine of Indoor Management"],
+    questions: [
+      {q:"A company is a distinct legal entity from its shareholders. This principle is called:", opts:["Doctrine of indoor management","Separate legal entity / corporate personality","Doctrine of ultra vires","Contract of agency"], correct:1, exp:"A company has its own legal identity, separate from its members — it can own property, sue and be sued in its own name."},
+      {q:"'Lifting the corporate veil' means:", opts:["Dissolving the company permanently","Ignoring the separate legal entity to hold members personally liable in specific cases","Changing the company's name","Merging two companies"], correct:1, exp:"Courts may 'lift the veil' in cases of fraud or improper conduct, holding individuals behind the company personally responsible."},
+      {q:"The document that defines a company's objectives and scope of activity is the:", opts:["Articles of Association","Memorandum of Association","Prospectus","Annual Report"], correct:1, exp:"The Memorandum of Association (MOA) defines the company's objects, scope, and relationship with the outside world."},
+      {q:"The Articles of Association mainly govern:", opts:["The company's relationship with outsiders","The internal rules and management of the company","Government tax policy","Shareholder residence requirements"], correct:1, exp:"Articles of Association (AOA) lay down the internal rules and regulations for managing the company's affairs."},
+      {q:"Under the Doctrine of Indoor Management, an outsider dealing with a company in good faith:", opts:["Must verify all internal company procedures were followed","Can assume internal procedures were properly followed","Is automatically liable for company debts","Cannot enter into any contract with the company"], correct:1, exp:"This doctrine protects outsiders — they can assume internal rules were complied with, and aren't expected to check internal management processes."}
+    ]
+  },
+  {
+    id: "ch7",
+    num: "No. 7",
+    title: "The Negotiable Instruments Act, 1881",
+    topics: ["Meaning & Characteristics","Classification of Instruments","Negotiation","Presentment","Rules of Compensation"],
+    questions: [
+      {q:"Which of these is a negotiable instrument under the Act?", opts:["A rent agreement","A promissory note","A partnership deed","A memorandum of association"], correct:1, exp:"Promissory notes, bills of exchange, and cheques are the three negotiable instruments specifically recognized under the Act."},
+      {q:"A key feature of a negotiable instrument is that it is:", opts:["Non-transferable","Freely transferable, with the transferee getting good title", "Only valid between the original two parties","Only usable by banks"], correct:1, exp:"Negotiability means the instrument can be transferred, and a bona fide transferee for value gets good title, even better than the transferor's in some cases."},
+      {q:"'Negotiation' of an instrument means:", opts:["Bargaining over its value","Transfer of the instrument to another person, making them the holder","Cancelling the instrument","Reporting it as lost"], correct:1, exp:"Negotiation is the process of transferring an instrument so that the transferee becomes its holder, entitled to its benefits."},
+      {q:"'Presentment for payment' refers to:", opts:["Showing the instrument to a court","Presenting the instrument to the party liable, demanding payment","Registering the instrument with RBI","Filing a police complaint"], correct:1, exp:"Presentment for payment is showing the instrument to the person liable and demanding payment on the due date."},
+      {q:"If a cheque is dishonoured, the drawer may face liability under:", opts:["The Sale of Goods Act","Section 138 of the Negotiable Instruments Act","The Companies Act","The Partnership Act"], correct:1, exp:"Section 138 of the NI Act makes dishonour of a cheque (due to insufficient funds etc.) a punishable offence."}
+    ]
+  }
+];
+
+/* ---------------- STORAGE HELPERS ---------------- */
+async function loadProgress(){
+  try{
+    const res = await window.storage.get('bl-progress', false);
+    return res ? JSON.parse(res.value) : {};
+  }catch(e){
+    return {};
+  }
+}
+async function saveProgress(data){
+  try{
+    await window.storage.set('bl-progress', JSON.stringify(data), false);
+  }catch(e){ /* fail silently, keep going in-memory */ }
+}
+
+let progress = {}; // { ch1: {attempted: n, correct: n}, ... }
+
+/* ---------------- SYLLABUS RENDER ---------------- */
+function renderSyllabus(){
+  const el = document.getElementById('syllabus');
+  el.innerHTML = chapters.map(c => {
+    const p = progress[c.id];
+    const done = p && p.attempted >= c.questions.length;
+    const stampText = done ? "Reviewed" : (p && p.attempted > 0 ? "In Progress" : "Not Started");
+    return `
+      <div class="docket">
+        <div class="docket-head">
+          <div>
+            <div class="docket-num">Chapter ${c.num}</div>
+            <h3>${c.title}</h3>
+          </div>
+          <div class="stamp ${done ? '' : 'pending'}">${stampText}</div>
+        </div>
+        <ul class="topics">${c.topics.map(t => `<li>${t}</li>`).join('')}</ul>
+      </div>
+    `;
+  }).join('');
+}
+
+/* ---------------- NOTES ---------------- */
+function renderNotesSelect(){
+  const sel = document.getElementById('notesSelect');
+  sel.innerHTML = chapters.map((c,i) => `<option value="${i}">Chapter ${c.num}: ${c.title}</option>`).join('');
+  sel.addEventListener('change', e => renderNotes(parseInt(e.target.value)));
+}
+function renderNotes(idx){
+  const chapter = chapters[idx];
+  const area = document.getElementById('notesArea');
+  if(chapter.notes){
+    area.innerHTML = `<div class="notes-body">${chapter.notes}</div>`;
+  } else {
+    area.innerHTML = `<div class="notes-body"><div class="notes-missing">ഈ chapter-ന്റെ detailed notes ഇതുവരെ ചേർത്തിട്ടില്ല. Chapter ${chapter.num}-ന്റെ notes വേണമെങ്കിൽ ചോദിക്കൂ.</div></div>`;
+  }
+}
+
+/* ---------------- PRACTICE ---------------- */
+let currentChapterIdx = 0;
+let currentQIdx = 0;
+let currentScore = 0;
+let answered = false;
+
+function renderChapterSelect(){
+  const sel = document.getElementById('chapterSelect');
+  sel.innerHTML = chapters.map((c,i) => `<option value="${i}">Chapter ${c.num}: ${c.title}</option>`).join('');
+  sel.addEventListener('change', e => {
+    currentChapterIdx = parseInt(e.target.value);
+    startQuiz();
+  });
+}
+
+function startQuiz(){
+  currentQIdx = 0;
+  currentScore = 0;
+  renderQuestion();
+}
+
+function renderQuestion(){
+  const chapter = chapters[currentChapterIdx];
+  const area = document.getElementById('quizArea');
+
+  if(currentQIdx >= chapter.questions.length){
+    area.innerHTML = `
+      <div class="quiz-card quiz-done">
+        <div class="q-progress">CHAPTER COMPLETE</div>
+        <div class="score">${currentScore} / ${chapter.questions.length}</div>
+        <div style="color:var(--ink-soft);font-size:13.5px;">correct answers this attempt</div>
+        <button class="next-btn show" style="margin-top:20px;" onclick="startQuiz()">Retry Chapter</button>
+      </div>
+    `;
+    return;
+  }
+
+  const q = chapter.questions[currentQIdx];
+  answered = false;
+  area.innerHTML = `
+    <div class="quiz-card">
+      <div class="q-progress">QUESTION ${currentQIdx+1} OF ${chapter.questions.length}</div>
+      <p class="q-text">${q.q}</p>
+      ${q.opts.map((opt,i) => `<button class="opt" data-idx="${i}">${String.fromCharCode(97+i)}) ${opt}</button>`).join('')}
+      <div class="explain" id="explainBox">${q.exp}</div>
+      <button class="next-btn" id="nextBtn">Next →</button>
+    </div>
+  `;
+
+  document.querySelectorAll('.opt').forEach(btn => {
+    btn.addEventListener('click', () => handleAnswer(parseInt(btn.dataset.idx), q));
+  });
+  document.getElementById('nextBtn').addEventListener('click', () => {
+    currentQIdx++;
+    renderQuestion();
+  });
+}
+
+async function handleAnswer(idx, q){
+  if(answered) return;
+  answered = true;
+  const opts = document.querySelectorAll('.opt');
+  opts.forEach((btn,i) => {
+    btn.disabled = true;
+    if(i === q.correct) btn.classList.add('correct');
+    else if(i === idx) btn.classList.add('wrong');
+  });
+  document.getElementById('explainBox').classList.add('show');
+  document.getElementById('nextBtn').classList.add('show');
+
+  const chId = chapters[currentChapterIdx].id;
+  if(!progress[chId]) progress[chId] = {attempted:0, correct:0};
+  progress[chId].attempted++;
+  if(idx === q.correct){
+    currentScore++;
+    progress[chId].correct++;
+  }
+  await saveProgress(progress);
+}
+
+/* ---------------- PROGRESS TAB ---------------- */
+function renderProgressTab(){
+  const el = document.getElementById('progress');
+  let totalAttempted = 0, totalCorrect = 0, totalQ = 0;
+  chapters.forEach(c => {
+    totalQ += c.questions.length;
+    const p = progress[c.id];
+    if(p){ totalAttempted += p.attempted; totalCorrect += p.correct; }
+  });
+  const acc = totalAttempted ? Math.round((totalCorrect/totalAttempted)*100) : 0;
+
+  el.innerHTML = `
+    <div class="stat-row">
+      <div class="stat-box"><div class="num">${totalAttempted}</div><div class="lbl">Questions Attempted</div></div>
+      <div class="stat-box"><div class="num">${totalCorrect}</div><div class="lbl">Correct Answers</div></div>
+      <div class="stat-box"><div class="num">${acc}%</div><div class="lbl">Accuracy</div></div>
+    </div>
+    <div class="docket">
+      ${chapters.map(c => {
+        const p = progress[c.id] || {attempted:0, correct:0};
+        const pct = p.attempted ? Math.round((p.correct/p.attempted)*100) : 0;
+        return `
+          <div class="prog-item">
+            <div class="prog-name">${c.title}</div>
+            <div class="prog-bar-track"><div class="prog-bar-fill" style="width:${pct}%"></div></div>
+            <div class="prog-pct">${pct}%</div>
+          </div>
+        `;
+      }).join('')}
+      ${totalAttempted === 0 ? '<div class="empty-note">No questions attempted yet — start in the Practice tab.</div>' : ''}
+    </div>
+    <span class="reset-link" id="resetLink">Reset all progress</span>
+  `;
+  document.getElementById('resetLink').addEventListener('click', async () => {
+    if(confirm('Reset all progress? This cannot be undone.')){
+      progress = {};
+      await saveProgress(progress);
+      renderSyllabus();
+      renderProgressTab();
+    }
+  });
+}
+
+/* ---------------- TABS ---------------- */
+document.querySelectorAll('nav.tabs button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('nav.tabs button').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    const tab = btn.dataset.tab;
+    document.getElementById(tab).classList.add('active');
+    if(tab === 'progress') renderProgressTab();
+    if(tab === 'syllabus') renderSyllabus();
+  });
+});
+
+/* ---------------- INIT ---------------- */
+(async function init(){
+  progress = await loadProgress();
+  renderSyllabus();
+  renderChapterSelect();
+  renderNotesSelect();
+  renderNotes(0);
+  startQuiz();
+})();
+</script>
+</body>
+</html>
